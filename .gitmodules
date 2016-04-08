@@ -1,0 +1,3 @@
+[submodule "NGJ2016-Unity/Assets/Scripts/LSComponents"]
+	path = NGJ2016-Unity/Assets/Scripts/LSComponents
+	url = git@github.com:Spierek/LSComponents.git
