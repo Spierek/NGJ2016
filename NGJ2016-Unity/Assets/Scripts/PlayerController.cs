@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
-public class PlayerController : LSCacheBehaviour {
+public class PlayerController : LSCacheBehaviour
+{
 	#region Variables
 	[Header("Movement")]
 	[SerializeField, Range(0,200)]
@@ -18,23 +19,30 @@ public class PlayerController : LSCacheBehaviour {
 	[Header("Dirs")]
 	[SerializeField]
 	private Transform paintDir;
-
-	private const string HORIZONTAL_AXIS_NAME = "Horizontal";
-	private const string VERTICAL_AXIS_NAME =	"Vertical";
 	#endregion
 
 	#region Monobehaviour
-	private void Start() {
+	private void Start()
+	{
 		LSDebug.SetEnabled(true);
 	}
-	
-	private void Update() {
+
+	private void Update()
+	{
 		rigidbody2D.drag = friction;
 		Move();
 
 		if (Input.GetMouseButtonDown(0))
 		{
 			Shoot();
+		}
+	}
+
+	public void OnTriggerStay2D(Collider2D collision)
+	{
+		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER_NAME))
+		{
+			LSDebug.WriteLine("LAVA");
 		}
 	}
 	#endregion
@@ -44,8 +52,8 @@ public class PlayerController : LSCacheBehaviour {
 	{
 		// get input
 		Vector2 movement = Vector2.zero;
-		movement.x = Input.GetAxisRaw(HORIZONTAL_AXIS_NAME);
-		movement.y = Input.GetAxisRaw(VERTICAL_AXIS_NAME);
+		movement.x = Input.GetAxisRaw(GameConsts.HORIZONTAL_AXIS_NAME);
+		movement.y = Input.GetAxisRaw(GameConsts.VERTICAL_AXIS_NAME);
 
 		// apply input
 		rigidbody2D.AddForce(movement * acceleration * Time.deltaTime, ForceMode2D.Impulse);
@@ -60,8 +68,6 @@ public class PlayerController : LSCacheBehaviour {
 
 		// calculate rotation angle
 		float rotationAngle = -LSGamepad.GetStickAngle(forward.x, forward.y);
-
-		Debug.DrawLine(transform.position, worldMousePos, Color.red);
 
 		// spawn player laser
 		Transform t = LSUtils.InstantiateAndParent(laserPrefab, paintDir);
