@@ -22,6 +22,8 @@ public class PlayerController : LSCacheBehaviour
 	private float m_DashSpeed = 100f;
 	[SerializeField, Range(0,2f)]
 	private float m_DashDelay = 0.5f;
+	[SerializeField, Range(0,2f)]
+	private float m_FiringDelay = 0.2f;
 
 	[Header("Components")]
 	[SerializeField]
@@ -40,7 +42,8 @@ public class PlayerController : LSCacheBehaviour
 	private float m_RotationAngle;
 
 	private bool m_HandleDOTInThisTurn = true; // handle only one DamageOverTime event per turn
-	private bool m_IsDashActive = true;
+	private bool m_CanDash = true;
+	private bool m_CanFire = true;
 	private bool m_IsFrozen = false;
 	#endregion
 
@@ -60,11 +63,11 @@ public class PlayerController : LSCacheBehaviour
 
 			Move();
 
-			if (Input.GetMouseButtonDown(0))
+			if (Input.GetMouseButtonDown(0) && m_CanFire)
 			{
 				Shoot();
 			}
-			if (Input.GetMouseButtonDown(1) && m_IsDashActive)
+			if (Input.GetMouseButtonDown(1) && m_CanDash)
 			{
 				Dash();
 			}
@@ -149,6 +152,9 @@ public class PlayerController : LSCacheBehaviour
 		Transform t = Instantiate(m_LaserPrefab).transform;
 		t.position = transform.position;
 		t.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
+
+		StartCoroutine(FiringDelay());
+		CameraShaker.Instance.Shake(0.15f, 0.2f);
     }
 
 	private void Dash()
@@ -177,9 +183,16 @@ public class PlayerController : LSCacheBehaviour
 
 	private IEnumerator DashDelay()
 	{
-		m_IsDashActive = false;
+		m_CanDash = false;
 		yield return new WaitForSeconds(m_DashDelay);
-		m_IsDashActive = true;
+		m_CanDash = true;
+	}
+
+	private IEnumerator FiringDelay()
+	{
+		m_CanFire = false;
+		yield return new WaitForSeconds(m_FiringDelay);
+		m_CanFire = true;
 	}
 	#endregion
 }
