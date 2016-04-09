@@ -22,6 +22,8 @@ public class PlayerController : LSCacheBehaviour
 	private float m_Friction = 20f;
 	[SerializeField, Range(1,200)]
 	private float m_DashSpeed = 100f;
+	[SerializeField, Range(0,2f)]
+	private float m_DashDelay = 0.5f;
 
 	[Header("Components")]
 	[SerializeField]
@@ -39,7 +41,8 @@ public class PlayerController : LSCacheBehaviour
 	private Vector2 m_Forward;
 	private float m_RotationAngle;
 
-	private bool m_HandleDOTInThisTurn = false;	// handle only one DamageOverTime event per turn
+	private bool m_HandleDOTInThisTurn = true; // handle only one DamageOverTime event per turn
+	private bool m_IsDashActive = true;
 	#endregion
 
 	#region Monobehaviour
@@ -58,7 +61,7 @@ public class PlayerController : LSCacheBehaviour
 	{
 		UpdatePhysics();
 		CalculateForward();
-		PositionCrosshair();
+		PositionCrosshairLine();
 
 		Move();
 
@@ -66,7 +69,7 @@ public class PlayerController : LSCacheBehaviour
 		{
 			Shoot();
 		}
-		if (Input.GetMouseButtonDown(1))
+		if (Input.GetMouseButtonDown(1) && m_IsDashActive)
 		{
 			Dash();
 		}
@@ -149,6 +152,17 @@ public class PlayerController : LSCacheBehaviour
 	{
 		rigidbody2D.AddForce(m_Forward * m_DashSpeed, ForceMode2D.Impulse);
 		StartCoroutine(DisableHitboxDuringDash());
+		StartCoroutine(DashDelay());
+	}
+
+	private void PositionCrosshairLine()
+	{
+		m_CrosshairPivot.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
+	}
+
+	private void UpdatePhysics()
+	{
+		rigidbody2D.drag = m_Friction;
 	}
 
 	private IEnumerator DisableHitboxDuringDash()
@@ -158,14 +172,11 @@ public class PlayerController : LSCacheBehaviour
 		m_Hitbox.enabled = true;
 	}
 
-	private void PositionCrosshair()
+	private IEnumerator DashDelay()
 	{
-		m_CrosshairPivot.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
-	}
-
-	private void UpdatePhysics()
-	{
-		rigidbody2D.drag = m_Friction;
+		m_IsDashActive = false;
+		yield return new WaitForSeconds(m_DashDelay);
+		m_IsDashActive = true;
 	}
 	#endregion
 }
