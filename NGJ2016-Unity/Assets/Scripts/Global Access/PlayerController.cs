@@ -101,8 +101,7 @@ public class PlayerController : LSCacheBehaviour
 	 	SetHealth(m_CurrentHealth - val);
 		if (m_CurrentHealth <= 0)
 		{
-			GameManager.Instance.paintManager.StartTransition();
-			SetHealth(m_MaxHealth);		// TODO: nice lerped transition
+			// TODO #LS game over
 		}
 	}
 
@@ -145,7 +144,7 @@ public class PlayerController : LSCacheBehaviour
 		// apply input
 		rigidbody2D.AddForce(movement * m_Acceleration * Time.deltaTime, ForceMode2D.Impulse);
 	}
-
+ 
 	private void Shoot()
 	{
 		// spawn player laser

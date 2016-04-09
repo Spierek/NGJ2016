@@ -15,6 +15,7 @@ public class EnemyManager : MonoBehaviour {
 	public void RemoveEnemy(BaseEnemy enemy)
 	{
 		m_Enemies.Remove(enemy);
+		GameManager.Instance.Progress();
 	}
 
 	public void FreezeAllEnemies(bool set)
