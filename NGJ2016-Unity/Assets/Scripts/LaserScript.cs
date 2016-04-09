@@ -7,6 +7,8 @@ public class LaserScript : MonoBehaviour
 	#region Variables
 	[SerializeField]
 	private Collider2D hitbox;
+	[SerializeField]
+	private Transform spritePivot;
 	#endregion
 
 	#region Monobehaviour
@@ -19,9 +21,19 @@ public class LaserScript : MonoBehaviour
 	#region Methods
 	private IEnumerator DelayedHitboxDisable()
 	{
-		yield return null;
-		yield return null;
-		hitbox.enabled = false;
+		int duration = 4;
+		for (int i = 0; i < duration; ++i)
+		{
+			spritePivot.localScale = new Vector3(1, (float)i / duration);
+			if (i == 3)
+			{
+				hitbox.enabled = false;
+			}
+
+			yield return null;
+		}
+
+		spritePivot.localScale = new Vector3(1, 1f);
 	}
 	#endregion
 }
