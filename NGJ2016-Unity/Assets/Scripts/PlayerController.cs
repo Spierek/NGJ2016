@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -11,8 +12,12 @@ public class PlayerController : LSCacheBehaviour
 	private float acceleration = 10f;
 	[SerializeField, Range(1,200)]
 	private float friction = 70f;
-	[SerializeField, Range(1,20)]
-	private float dashSpeed = 8f;
+	[SerializeField, Range(1,100)]
+	private float dashSpeed = 80f;
+
+	[Header("Collision")]
+	[SerializeField]
+	private Collider2D hitbox;
 
 	[Header("Prefabs")]
 	[SerializeField]
@@ -58,6 +63,14 @@ public class PlayerController : LSCacheBehaviour
 	#endregion
 
 	#region Methods
+	private void CalculateForward()
+	{
+		Vector3 mousePos = Input.mousePosition;
+		worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+		forward = worldMousePos - transform.position;
+		forward.Normalize();
+	}
+
 	private void Move()
 	{
 		// get input
@@ -83,13 +96,14 @@ public class PlayerController : LSCacheBehaviour
 	private void Dash()
 	{
 		rigidbody2D.AddForce(forward * dashSpeed, ForceMode2D.Impulse);
+		StartCoroutine(DisableHitboxDuringDash());
 	}
 
-	private void CalculateForward()
+	private IEnumerator DisableHitboxDuringDash()
 	{
-		Vector3 mousePos = Input.mousePosition;
-		worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		forward = worldMousePos - transform.position;
+		hitbox.enabled = false;
+		yield return new WaitForSeconds(2.0f / friction);
+		hitbox.enabled = true;
 	}
 	#endregion
 }

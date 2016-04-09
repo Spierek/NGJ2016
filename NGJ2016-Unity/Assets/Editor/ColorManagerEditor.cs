@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections.Generic;
+﻿using UnityEditor;
 
 [CustomEditor(typeof(ColorManager))]
 public class ColorManagerEditor : Editor
