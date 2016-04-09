@@ -7,6 +7,8 @@ using System.Collections;
 public class PlayerController : LSCacheBehaviour
 {
 	#region Variables
+	public static PlayerController Instance;
+
 	[Header("Stats")]
 	[SerializeField, Range(0,100)]
 	private float m_MaxHealth = 100;
@@ -45,6 +47,11 @@ public class PlayerController : LSCacheBehaviour
 	#endregion
 
 	#region Monobehaviour
+	private void Awake()
+	{
+		Instance = this;
+	}
+
 	private void Start()
 	{
 		LSDebug.SetEnabled(true);
