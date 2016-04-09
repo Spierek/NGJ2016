@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class LaserScript : MonoBehaviour {
 	#region Variables
@@ -28,6 +29,11 @@ public class LaserScript : MonoBehaviour {
 	{
 		lavaTrigger.enabled = set;
 		Destroy(gameObject, delay);
+
+		// delayed paint fadeout
+		Sequence seq = DOTween.Sequence();
+		seq.PrependInterval(0.7f * delay).Append(spriteRenderer.DOFade(0, 0.3f * delay));
+		seq.Play();
 	}
 
 	private void SetColor()
