@@ -21,9 +21,11 @@ public class PlayerController : LSCacheBehaviour
 	[SerializeField, Range(1,200)]
 	private float m_DashSpeed = 100f;
 
-	[Header("Collision")]
+	[Header("Components")]
 	[SerializeField]
 	private Collider2D m_Hitbox;
+	[SerializeField]
+	private Transform m_CrosshairPivot;
 
 	[Header("Prefabs")]
 	[SerializeField]
@@ -36,7 +38,8 @@ public class PlayerController : LSCacheBehaviour
 	private float m_CurrentHealth;
 
 	private Vector3 m_WorldMousePos;
-	private Vector3 m_Forward;
+	private Vector2 m_Forward;
+	private float m_RotationAngle;
 	#endregion
 
 	#region Monobehaviour
@@ -48,8 +51,10 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Update()
 	{
-		rigidbody2D.drag = m_Friction;
+		UpdatePhysics();
 		CalculateForward();
+		PositionCrosshair();
+
 		Move();
 
 		if (Input.GetMouseButtonDown(0))
@@ -97,8 +102,12 @@ public class PlayerController : LSCacheBehaviour
 	{
 		Vector3 mousePos = Input.mousePosition;
 		m_WorldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		m_Forward = m_WorldMousePos - transform.position;
-		m_Forward.Normalize();
+
+		Vector2 A = new Vector2(m_WorldMousePos.x, m_WorldMousePos.y);
+		Vector2 B = new Vector2(transform.position.x, transform.position.y);
+		m_Forward = (A - B).normalized;
+
+		m_RotationAngle = -LSGamepad.GetStickAngle(m_Forward.x, m_Forward.y);
 	}
 
 	private void Move()
@@ -114,13 +123,10 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Shoot()
 	{
-		// calculate rotation angle
-		float rotationAngle = -LSGamepad.GetStickAngle(m_Forward.x, m_Forward.y);
-
 		// spawn player laser
 		Transform t = LSUtils.InstantiateAndParent(m_LaserPrefab, m_PaintDir);
 		t.position = transform.position;
-		t.localRotation = Quaternion.Euler(0, 0, rotationAngle);
+		t.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
     }
 
 	private void Dash()
@@ -134,6 +140,16 @@ public class PlayerController : LSCacheBehaviour
 		m_Hitbox.enabled = false;
 		yield return new WaitForSeconds(2.0f / m_Friction);
 		m_Hitbox.enabled = true;
+	}
+
+	private void PositionCrosshair()
+	{
+		m_CrosshairPivot.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
+	}
+
+	private void UpdatePhysics()
+	{
+		rigidbody2D.drag = m_Friction;
 	}
 	#endregion
 }
