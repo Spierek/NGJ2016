@@ -17,19 +17,11 @@ public class EnemyManager : MonoBehaviour {
 		m_Enemies.Remove(enemy);
 	}
 
-	public void FreezeAllEnemies()
+	public void FreezeAllEnemies(bool set)
 	{
 		for (int i = 0; i < m_Enemies.Count; ++i)
 		{
-			m_Enemies[i].SetFreeze(true);
-		}
-	}
-
-	public void UnfreezeAllEnemies()
-	{
-		for (int i = 0; i < m_Enemies.Count; ++i)
-		{
-			m_Enemies[i].SetFreeze(false);
+			m_Enemies[i].SetFreeze(set);
 		}
 	}
 	#endregion

@@ -21,18 +21,9 @@ public class GameManager : MonoBehaviour {
 	#region Methods
 	public void SetGameplayFreeze(bool set)
 	{
-		if (Input.GetKeyDown(KeyCode.U))
-		{
-			player.SetFreeze(true);
-			enemyManager.FreezeAllEnemies();
-			enemySpawner.SetFreeze(true);
-		}
-		if (Input.GetKeyDown(KeyCode.I))
-		{
-			player.SetFreeze(false);
-			enemyManager.UnfreezeAllEnemies();
-			enemySpawner.SetFreeze(false);
-		}
+		player.SetFreeze(set);
+		enemyManager.FreezeAllEnemies(set);
+		enemySpawner.SetFreeze(set);
 	}
 	#endregion
 }
