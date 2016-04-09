@@ -33,10 +33,6 @@ public class PlayerController : LSCacheBehaviour
 	[SerializeField]
 	private GameObject m_LaserPrefab;
 
-	[Header("Dirs")]
-	[SerializeField]
-	private Transform m_PaintDir;
-
 	private float m_CurrentHealth;
 
 	private Vector3 m_WorldMousePos;
@@ -144,7 +140,7 @@ public class PlayerController : LSCacheBehaviour
 	private void Shoot()
 	{
 		// spawn player laser
-		Transform t = LSUtils.InstantiateAndParent(m_LaserPrefab, m_PaintDir);
+		Transform t = Instantiate(m_LaserPrefab).transform;
 		t.position = transform.position;
 		t.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
     }

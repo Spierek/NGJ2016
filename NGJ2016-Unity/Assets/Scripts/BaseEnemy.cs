@@ -33,6 +33,7 @@ public class BaseEnemy : LSCacheBehaviour {
 	public void Kill()
 	{
 		// TODO #LS drop particles n shit
+		PaintManager.Instance.AddSplat(transform.position, m_SpriteRenderer.color);
 		Destroy(gameObject);
 	}
 
