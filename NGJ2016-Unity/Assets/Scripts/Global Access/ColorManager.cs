@@ -10,6 +10,7 @@ public class ColorManager : MonoBehaviour {
 	private Vector2 alphaRange = new Vector2(0.8f, 0.9f);
 
 	private Color currentColor;
+	private bool bgIsBlack = false;
 	#endregion
 
 	#region Monobehaviour
@@ -23,15 +24,12 @@ public class ColorManager : MonoBehaviour {
 	#region Methods
 	public Color GetCurrentColor()
 	{
-		return currentColor;
+		return bgIsBlack ? Color.black : Color.white;
 	}
 
 	public void ChangeCurrentColor()
 	{
-		currentColor = Random.ColorHSV(0f, 1f, 
-			saturationRange.x, saturationRange.y, 
-			0.8f, 1f, 
-			alphaRange.x, alphaRange.y);
+		bgIsBlack = !bgIsBlack;
 	}
 	#endregion
 }
