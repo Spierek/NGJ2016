@@ -78,7 +78,7 @@ public class PlayerController : LSCacheBehaviour
 		Transform t = LSUtils.InstantiateAndParent(laserPrefab, paintDir);
 		t.position = transform.position;
 		t.localRotation = Quaternion.Euler(0, 0, rotationAngle);
-	}
+    }
 
 	private void Dash()
 	{
