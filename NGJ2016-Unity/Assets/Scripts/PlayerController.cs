@@ -7,10 +7,12 @@ public class PlayerController : LSCacheBehaviour
 {
 	#region Variables
 	[Header("Movement")]
-	[SerializeField, Range(0,200)]
+	[SerializeField, Range(1,200)]
 	private float acceleration = 10f;
-	[SerializeField, Range(0,200)]
+	[SerializeField, Range(1,200)]
 	private float friction = 70f;
+	[SerializeField, Range(1,20)]
+	private float dashSpeed = 8f;
 
 	[Header("Prefabs")]
 	[SerializeField]
@@ -19,6 +21,9 @@ public class PlayerController : LSCacheBehaviour
 	[Header("Dirs")]
 	[SerializeField]
 	private Transform paintDir;
+
+	private Vector3 worldMousePos;
+	private Vector3 forward;
 	#endregion
 
 	#region Monobehaviour
@@ -30,11 +35,16 @@ public class PlayerController : LSCacheBehaviour
 	private void Update()
 	{
 		rigidbody2D.drag = friction;
+		CalculateForward();
 		Move();
 
 		if (Input.GetMouseButtonDown(0))
 		{
 			Shoot();
+		}
+		if (Input.GetMouseButtonDown(1))
+		{
+			Dash();
 		}
 	}
 
@@ -61,11 +71,6 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Shoot()
 	{
-		// get firing direction
-		Vector3 mousePos = Input.mousePosition;
-		Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		Vector3 forward = worldMousePos - transform.position;
-
 		// calculate rotation angle
 		float rotationAngle = -LSGamepad.GetStickAngle(forward.x, forward.y);
 
@@ -73,6 +78,18 @@ public class PlayerController : LSCacheBehaviour
 		Transform t = LSUtils.InstantiateAndParent(laserPrefab, paintDir);
 		t.position = transform.position;
 		t.localRotation = Quaternion.Euler(0, 0, rotationAngle);
+	}
+
+	private void Dash()
+	{
+		rigidbody2D.AddForce(forward * dashSpeed, ForceMode2D.Impulse);
+	}
+
+	private void CalculateForward()
+	{
+		Vector3 mousePos = Input.mousePosition;
+		worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+		forward = worldMousePos - transform.position;
 	}
 	#endregion
 }
