@@ -8,10 +8,13 @@ public class ColorManagerEditor : Editor
 	{
 		DrawDefaultInspector();
 
-		EditorGUILayout.BeginHorizontal();
-		EditorGUILayout.LabelField("Current Color");
-		EditorGUILayout.ColorField(ColorManager.Instance.GetCurrentColor());
-		EditorGUILayout.EndHorizontal();
+		if (ColorManager.Instance != null)
+		{
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField("Current Color");
+			EditorGUILayout.ColorField(ColorManager.Instance.GetCurrentColor());
+			EditorGUILayout.EndHorizontal();
+		}
 	}
 	#endregion
 }

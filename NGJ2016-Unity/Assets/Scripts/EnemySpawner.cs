@@ -28,15 +28,14 @@ public class EnemySpawner : MonoBehaviour {
 		float delay = Random.Range(spawnDelay.x, spawnDelay.y);
 		yield return new WaitForSeconds(delay);
 
-		// check if spawning isn't happening to close to the player
+		// check if spawning isn't happening too close to the player
 		do
 		{
 			RandomizePosition();
 		}
 		while (CheckPlayerDistance());
 
-		Transform t = LSUtils.InstantiateAndParent(enemyPrefab, spawnDir);
-		t.position = transform.position;
+		Spawn();
 
 		StartCoroutine(WaitAndSpawn());
 	}
@@ -55,6 +54,13 @@ public class EnemySpawner : MonoBehaviour {
 	private bool CheckPlayerDistance()
 	{
 		return minPlayerDistance >= Vector3.Distance(PlayerController.Instance.transform.position, transform.position);
+	}
+
+	private void Spawn()
+	{
+		Transform t = LSUtils.InstantiateAndParent(enemyPrefab, spawnDir);
+		t.position = transform.position;
+		EnemyManager.Instance.AddEnemy(t.GetComponent<BaseEnemy>());
 	}
 	#endregion
 }

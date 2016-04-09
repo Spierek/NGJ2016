@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class ColorManager : MonoBehaviour {
 	#region Variables
