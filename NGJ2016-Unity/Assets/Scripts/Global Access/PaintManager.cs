@@ -11,6 +11,8 @@ public class PaintManager : MonoBehaviour {
 	[Header("Prefabs")]
 	[SerializeField]
 	private GameObject m_SplatPrefab;
+	[SerializeField]
+	private GameObject m_BigSplatPrefab;
 
 	[Header("References")]
 	[SerializeField]
@@ -33,6 +35,7 @@ public class PaintManager : MonoBehaviour {
 		Color prevColor = m_ArenaBG.color;
 		Color newColor = ColorManager.Instance.GetCurrentColor();
 		ColorManager.Instance.ChangeCurrentColor();
+
 		StartCoroutine(FadeBG(prevColor, newColor));
 	}
 
@@ -44,21 +47,39 @@ public class PaintManager : MonoBehaviour {
 
 	public void AddSplat(Vector3 position, Color color)
 	{
-		Transform t = Instantiate(m_SplatPrefab).transform;
+		Transform t = LSUtils.InstantiateAndParent(m_SplatPrefab, m_PaintDir);
 		t.position = position;
+	}
+
+	public void AddBigSplat(Color color, float lifetime)
+	{
+		GameObject go = Instantiate(m_BigSplatPrefab);
+		go.transform.parent = m_PaintDir;
+		go.GetComponent<TransitionPaint>().Enable(color, lifetime);
+		
+		Destroy(go, lifetime);
 	}
 
 	private IEnumerator FadeBG(Color prevColor, Color newColor)
 	{
+		GameManager.Instance.SetGameplayFreeze(true);
+		CameraShaker.Instance.Shake(m_TransitionDuration, 2f);
 		float timer = 0;
+
 		while (timer < m_TransitionDuration)
 		{
-			m_ArenaBG.color = Color.Lerp(prevColor, newColor, timer / m_TransitionDuration);
+			float remaining = m_TransitionDuration - timer;
+			AddBigSplat(newColor, remaining);
+            AddBigSplat(newColor, remaining);
+
+
 			timer += Time.deltaTime;
 			yield return null;
 		}
 
 		m_ArenaBG.color = newColor;
+
+		GameManager.Instance.SetGameplayFreeze(false);
 	}
 	#endregion
 }
