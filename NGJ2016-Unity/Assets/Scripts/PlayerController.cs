@@ -7,39 +7,48 @@ using System.Collections;
 public class PlayerController : LSCacheBehaviour
 {
 	#region Variables
+	[Header("Stats")]
+	[SerializeField, Range(0,100)]
+	private float m_MaxHealth = 100;
+	[SerializeField, Range(0,100)]
+	private float m_DamagePerSecond = 10f;
+
 	[Header("Movement")]
 	[SerializeField, Range(1,200)]
-	private float acceleration = 10f;
+	private float m_Acceleration = 150f;
 	[SerializeField, Range(1,200)]
-	private float friction = 70f;
-	[SerializeField, Range(1,100)]
-	private float dashSpeed = 80f;
+	private float m_Friction = 20f;
+	[SerializeField, Range(1,200)]
+	private float m_DashSpeed = 100f;
 
 	[Header("Collision")]
 	[SerializeField]
-	private Collider2D hitbox;
+	private Collider2D m_Hitbox;
 
 	[Header("Prefabs")]
 	[SerializeField]
-	private GameObject laserPrefab;
+	private GameObject m_LaserPrefab;
 
 	[Header("Dirs")]
 	[SerializeField]
-	private Transform paintDir;
+	private Transform m_PaintDir;
 
-	private Vector3 worldMousePos;
-	private Vector3 forward;
+	private float m_CurrentHealth;
+
+	private Vector3 m_WorldMousePos;
+	private Vector3 m_Forward;
 	#endregion
 
 	#region Monobehaviour
 	private void Start()
 	{
 		LSDebug.SetEnabled(true);
+		SetHealth(m_MaxHealth);
 	}
 
 	private void Update()
 	{
-		rigidbody2D.drag = friction;
+		rigidbody2D.drag = m_Friction;
 		CalculateForward();
 		Move();
 
@@ -57,18 +66,39 @@ public class PlayerController : LSCacheBehaviour
 	{
 		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER_NAME))
 		{
-			LSDebug.WriteLine("LAVA");
+			DamageOverTime();
 		}
 	}
 	#endregion
 
 	#region Methods
+	public void Damage(float val)
+	{
+	 	SetHealth(m_CurrentHealth - val);
+	}
+
+	public float GetCurrentHealth01()
+	{
+		return m_CurrentHealth / m_MaxHealth;
+	}
+
+	private void DamageOverTime()
+	{
+		Damage(m_DamagePerSecond * Time.deltaTime);
+	}
+
+	private void SetHealth(float val)
+	{
+		m_CurrentHealth = Mathf.Clamp(val, 0, m_MaxHealth);
+		UIManager.Instance.transitionSlider.value = GetCurrentHealth01();
+	}
+
 	private void CalculateForward()
 	{
 		Vector3 mousePos = Input.mousePosition;
-		worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		forward = worldMousePos - transform.position;
-		forward.Normalize();
+		m_WorldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+		m_Forward = m_WorldMousePos - transform.position;
+		m_Forward.Normalize();
 	}
 
 	private void Move()
@@ -79,31 +109,31 @@ public class PlayerController : LSCacheBehaviour
 		movement.y = Input.GetAxisRaw(GameConsts.VERTICAL_AXIS_NAME);
 
 		// apply input
-		rigidbody2D.AddForce(movement * acceleration * Time.deltaTime, ForceMode2D.Impulse);
+		rigidbody2D.AddForce(movement * m_Acceleration * Time.deltaTime, ForceMode2D.Impulse);
 	}
 
 	private void Shoot()
 	{
 		// calculate rotation angle
-		float rotationAngle = -LSGamepad.GetStickAngle(forward.x, forward.y);
+		float rotationAngle = -LSGamepad.GetStickAngle(m_Forward.x, m_Forward.y);
 
 		// spawn player laser
-		Transform t = LSUtils.InstantiateAndParent(laserPrefab, paintDir);
+		Transform t = LSUtils.InstantiateAndParent(m_LaserPrefab, m_PaintDir);
 		t.position = transform.position;
 		t.localRotation = Quaternion.Euler(0, 0, rotationAngle);
     }
 
 	private void Dash()
 	{
-		rigidbody2D.AddForce(forward * dashSpeed, ForceMode2D.Impulse);
+		rigidbody2D.AddForce(m_Forward * m_DashSpeed, ForceMode2D.Impulse);
 		StartCoroutine(DisableHitboxDuringDash());
 	}
 
 	private IEnumerator DisableHitboxDuringDash()
 	{
-		hitbox.enabled = false;
-		yield return new WaitForSeconds(2.0f / friction);
-		hitbox.enabled = true;
+		m_Hitbox.enabled = false;
+		yield return new WaitForSeconds(2.0f / m_Friction);
+		m_Hitbox.enabled = true;
 	}
 	#endregion
 }
