@@ -43,6 +43,7 @@ public class PlayerController : LSCacheBehaviour
 
 	private bool m_HandleDOTInThisTurn = true; // handle only one DamageOverTime event per turn
 	private bool m_IsDashActive = true;
+	private bool m_IsFrozen = false;
 	#endregion
 
 	#region Monobehaviour
@@ -59,20 +60,24 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Update()
 	{
-		UpdatePhysics();
-		CalculateForward();
+		if (!m_IsFrozen)
+		{
+			UpdatePhysics();
+			CalculateForward();
+
+			Move();
+
+			if (Input.GetMouseButtonDown(0))
+			{
+				Shoot();
+			}
+			if (Input.GetMouseButtonDown(1) && m_IsDashActive)
+			{
+				Dash();
+			}
+		}
+
 		PositionCrosshairLine();
-
-		Move();
-
-		if (Input.GetMouseButtonDown(0))
-		{
-			Shoot();
-		}
-		if (Input.GetMouseButtonDown(1) && m_IsDashActive)
-		{
-			Dash();
-		}
 	}
 
 	private void LateUpdate()
@@ -90,6 +95,11 @@ public class PlayerController : LSCacheBehaviour
 	#endregion
 
 	#region Methods
+	public void SetFreeze(bool set)
+	{
+		m_IsFrozen = set;
+	}
+
 	public void Damage(float val)
 	{
 	 	SetHealth(m_CurrentHealth - val);

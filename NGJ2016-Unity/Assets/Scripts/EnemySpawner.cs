@@ -3,6 +3,8 @@ using System.Collections;
 
 public class EnemySpawner : MonoBehaviour {
 	#region Variables
+	public static EnemySpawner Instance;
+
 	[SerializeField]
 	private Vector2 spawnDelay = new Vector2(1f, 2f);
 	[SerializeField, Range(0,10f)]
@@ -14,29 +16,51 @@ public class EnemySpawner : MonoBehaviour {
 	[Header("Prefabs")]
 	[SerializeField]
 	private GameObject enemyPrefab;
+
+	private bool m_IsFrozen = false;
 	#endregion
 
 	#region Monobehaviour
+	private void Awake()
+	{
+		Instance = this;
+	}
+
 	private void Start() {
 		StartCoroutine(WaitAndSpawn());
 	}
 	#endregion
 
 	#region Methods
+	public void SetFreeze(bool set)
+	{
+		m_IsFrozen = set;
+	}
+
 	private IEnumerator WaitAndSpawn()
 	{
 		float delay = Random.Range(spawnDelay.x, spawnDelay.y);
-		yield return new WaitForSeconds(delay);
+		float timer = 0f;
 
+		while (timer < delay)
+		{
+			if (!m_IsFrozen)
+			{
+				timer += Time.deltaTime;
+			}
+
+			yield return null;
+		}
+		
 		// check if spawning isn't happening too close to the player
 		do
 		{
 			RandomizePosition();
 		}
 		while (CheckPlayerDistance());
-
 		Spawn();
 
+		// start another wait
 		StartCoroutine(WaitAndSpawn());
 	}
 

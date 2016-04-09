@@ -12,6 +12,22 @@ public class EnemyManager : MonoBehaviour {
 	private void Awake() {
 		Instance = this;
 	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.U))
+		{
+			FreezeAllEnemies();
+			PlayerController.Instance.SetFreeze(true);
+			EnemySpawner.Instance.SetFreeze(true);
+		}
+		if (Input.GetKeyDown(KeyCode.I))
+		{
+			UnfreezeAllEnemies();
+			PlayerController.Instance.SetFreeze(false);
+			EnemySpawner.Instance.SetFreeze(false);
+		}
+	}
 	#endregion
 
 	#region Methods
@@ -27,12 +43,18 @@ public class EnemyManager : MonoBehaviour {
 
 	public void FreezeAllEnemies()
 	{
-		// TODO #LS
+		for (int i = 0; i < m_Enemies.Count; ++i)
+		{
+			m_Enemies[i].SetFreeze(true);
+		}
 	}
 
 	public void UnfreezeAllEnemies()
 	{
-		// TODO #LS
+		for (int i = 0; i < m_Enemies.Count; ++i)
+		{
+			m_Enemies[i].SetFreeze(false);
+		}
 	}
 	#endregion
 }

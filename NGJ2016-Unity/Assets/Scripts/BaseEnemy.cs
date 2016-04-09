@@ -9,6 +9,8 @@ public class BaseEnemy : LSCacheBehaviour {
 
 	[SerializeField]
 	private SpriteRenderer m_SpriteRenderer;
+
+	private bool m_IsFrozen = false;
 	#endregion
 
 	#region Monobehaviour
@@ -17,12 +19,15 @@ public class BaseEnemy : LSCacheBehaviour {
 	}
 	
 	private void Update() {
-		Move();
+		if (!m_IsFrozen)
+		{
+			Move();
+		}
 	}
 
 	public void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_PROJECTILE_LAYER))
+		if (!m_IsFrozen && collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_PROJECTILE_LAYER))
 		{
 			Kill();
 		}
@@ -30,6 +35,11 @@ public class BaseEnemy : LSCacheBehaviour {
 	#endregion
 
 	#region Methods
+	public void SetFreeze(bool set)
+	{
+		m_IsFrozen = set;
+	}
+
 	public void Kill()
 	{
 		// TODO #LS drop particles n shit
