@@ -40,7 +40,7 @@ public class PaintInstance : MonoBehaviour {
 
 	private void SetColor()
 	{
-		SetColor(ColorManager.GetCurrentColor());
+		SetColor(ColorManager.Instance.GetCurrentColor());
 	}
 
 	private void SetColor(Color col)

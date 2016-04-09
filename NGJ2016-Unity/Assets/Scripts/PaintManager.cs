@@ -39,8 +39,8 @@ public class PaintManager : MonoBehaviour {
 		m_Instances.Clear();
 		
 		Color prevColor = m_ArenaBG.color;
-		Color newColor = ColorManager.GetCurrentColor();
-		ColorManager.ChangeCurrentColor();
+		Color newColor = ColorManager.Instance.GetCurrentColor();
+		ColorManager.Instance.ChangeCurrentColor();
 		StartCoroutine(FadeBG(prevColor, newColor));
 	}
 

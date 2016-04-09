@@ -3,25 +3,36 @@ using System.Collections.Generic;
 
 public class ColorManager : MonoBehaviour {
 	#region Variables
-	private static Color currentColor;
+	public static ColorManager Instance;
+
+	[SerializeField]
+	private Vector2 saturationRange = new Vector2(0.8f, 1f);
+	[SerializeField]
+	private Vector2 alphaRange = new Vector2(0.8f, 0.9f);
+
+	private Color currentColor;
 	#endregion
 
 	#region Monobehaviour
 	private void Awake()
 	{
+		Instance = this;
 		ChangeCurrentColor();
 	}
 	#endregion
 
 	#region Methods
-	public static Color GetCurrentColor()
+	public Color GetCurrentColor()
 	{
 		return currentColor;
 	}
 
-	public static void ChangeCurrentColor()
+	public void ChangeCurrentColor()
 	{
-		currentColor = Random.ColorHSV(0f, 1f, 0.8f, 1f, 0.8f, 1f, 0.8f, 1f);
+		currentColor = Random.ColorHSV(0f, 1f, 
+			saturationRange.x, saturationRange.y, 
+			0.8f, 1f, 
+			alphaRange.x, alphaRange.y);
 	}
 	#endregion
 }

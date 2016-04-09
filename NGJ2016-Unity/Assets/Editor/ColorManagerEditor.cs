@@ -10,7 +10,7 @@ public class ColorManagerEditor : Editor
 
 		EditorGUILayout.BeginHorizontal();
 		EditorGUILayout.LabelField("Current Color");
-		EditorGUILayout.ColorField(ColorManager.GetCurrentColor());
+		EditorGUILayout.ColorField(ColorManager.Instance.GetCurrentColor());
 		EditorGUILayout.EndHorizontal();
 	}
 	#endregion

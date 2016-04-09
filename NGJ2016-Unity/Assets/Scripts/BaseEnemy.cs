@@ -13,7 +13,7 @@ public class BaseEnemy : LSCacheBehaviour {
 
 	#region Monobehaviour
 	private void Start() {
-		m_SpriteRenderer.color = ColorManager.GetCurrentColor();
+		m_SpriteRenderer.color = ColorManager.Instance.GetCurrentColor();
 	}
 	
 	private void Update() {
