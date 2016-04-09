@@ -14,6 +14,7 @@ public class LaserScript : MonoBehaviour {
 	#region Monobehaviour
 	private void Start() {
 		SetColor();
+		PaintManager.Instance.AddLaser(this);
 	}
 	
 	private void Update() {
@@ -22,6 +23,13 @@ public class LaserScript : MonoBehaviour {
 	#endregion
 
 	#region Methods
+	// TODO #LS pool paint instead of destroy?		
+	public void DelayedDestroy(bool set, float delay)
+	{
+		lavaTrigger.enabled = set;
+		Destroy(gameObject, delay);
+	}
+
 	private void SetColor()
 	{
 		SetColor(ColorManager.GetCurrentColor());

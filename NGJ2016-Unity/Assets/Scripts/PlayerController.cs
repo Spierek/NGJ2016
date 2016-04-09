@@ -40,6 +40,8 @@ public class PlayerController : LSCacheBehaviour
 	private Vector3 m_WorldMousePos;
 	private Vector2 m_Forward;
 	private float m_RotationAngle;
+
+	private bool m_HandleDOTInThisTurn = false;	// handle only one DamageOverTime event per turn
 	#endregion
 
 	#region Monobehaviour
@@ -67,9 +69,14 @@ public class PlayerController : LSCacheBehaviour
 		}
 	}
 
-	public void OnTriggerStay2D(Collider2D collision)
+	private void LateUpdate()
 	{
-		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER_NAME))
+		m_HandleDOTInThisTurn = true;
+	}
+
+	private void OnTriggerStay2D(Collider2D collision)
+	{
+		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER_NAME) && m_HandleDOTInThisTurn)
 		{
 			DamageOverTime();
 		}
@@ -80,6 +87,11 @@ public class PlayerController : LSCacheBehaviour
 	public void Damage(float val)
 	{
 	 	SetHealth(m_CurrentHealth - val);
+		if (m_CurrentHealth <= 0)
+		{
+			PaintManager.Instance.StartTransition();
+			SetHealth(m_MaxHealth);		// TODO: nice lerped transition
+		}
 	}
 
 	public float GetCurrentHealth01()
@@ -90,6 +102,7 @@ public class PlayerController : LSCacheBehaviour
 	private void DamageOverTime()
 	{
 		Damage(m_DamagePerSecond * Time.deltaTime);
+		m_HandleDOTInThisTurn = false;
 	}
 
 	private void SetHealth(float val)
