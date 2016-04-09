@@ -7,8 +7,6 @@ using System.Collections;
 public class PlayerController : LSCacheBehaviour
 {
 	#region Variables
-	public static PlayerController Instance;
-
 	[Header("Stats")]
 	[SerializeField, Range(0,100)]
 	private float m_MaxHealth = 100;
@@ -47,11 +45,6 @@ public class PlayerController : LSCacheBehaviour
 	#endregion
 
 	#region Monobehaviour
-	private void Awake()
-	{
-		Instance = this;
-	}
-
 	private void Start()
 	{
 		LSDebug.SetEnabled(true);
@@ -105,7 +98,7 @@ public class PlayerController : LSCacheBehaviour
 	 	SetHealth(m_CurrentHealth - val);
 		if (m_CurrentHealth <= 0)
 		{
-			PaintManager.Instance.StartTransition();
+			GameManager.Instance.paintManager.StartTransition();
 			SetHealth(m_MaxHealth);		// TODO: nice lerped transition
 		}
 	}
@@ -124,7 +117,7 @@ public class PlayerController : LSCacheBehaviour
 	private void SetHealth(float val)
 	{
 		m_CurrentHealth = Mathf.Clamp(val, 0, m_MaxHealth);
-		UIManager.Instance.transitionSlider.value = GetCurrentHealth01();
+		GameManager.Instance.uiManager.transitionSlider.value = GetCurrentHealth01();
 	}
 
 	private void CalculateForward()

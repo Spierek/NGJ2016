@@ -3,8 +3,6 @@ using System.Collections;
 
 public class EnemySpawner : MonoBehaviour {
 	#region Variables
-	public static EnemySpawner Instance;
-
 	[SerializeField]
 	private Vector2 spawnDelay = new Vector2(1f, 2f);
 	[SerializeField, Range(0,10f)]
@@ -21,11 +19,6 @@ public class EnemySpawner : MonoBehaviour {
 	#endregion
 
 	#region Monobehaviour
-	private void Awake()
-	{
-		Instance = this;
-	}
-
 	private void Start() {
 		StartCoroutine(WaitAndSpawn());
 	}
@@ -66,7 +59,7 @@ public class EnemySpawner : MonoBehaviour {
 
 	private void RandomizePosition()
 	{
-		Bounds bounds = BoundsScript.Instance.bounds;
+		Bounds bounds = GameManager.Instance.bounds.bounds;
 		Vector3 newPos = new Vector3(
 			Random.Range(-bounds.extents.x, bounds.extents.x),
             Random.Range(-bounds.extents.y, bounds.extents.y),
@@ -77,14 +70,14 @@ public class EnemySpawner : MonoBehaviour {
 
 	private bool CheckPlayerDistance()
 	{
-		return minPlayerDistance >= Vector3.Distance(PlayerController.Instance.transform.position, transform.position);
+		return minPlayerDistance >= Vector3.Distance(GameManager.Instance.player.transform.position, transform.position);
 	}
 
 	private void Spawn()
 	{
 		Transform t = LSUtils.InstantiateAndParent(enemyPrefab, spawnDir);
 		t.position = transform.position;
-		EnemyManager.Instance.AddEnemy(t.GetComponent<BaseEnemy>());
+		GameManager.Instance.enemyManager.AddEnemy(t.GetComponent<BaseEnemy>());
 	}
 	#endregion
 }

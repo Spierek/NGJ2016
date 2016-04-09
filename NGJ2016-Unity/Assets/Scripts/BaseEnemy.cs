@@ -43,14 +43,14 @@ public class BaseEnemy : LSCacheBehaviour {
 	public void Kill()
 	{
 		// TODO #LS drop particles n shit
-		PaintManager.Instance.AddSplat(transform.position, m_SpriteRenderer.color);
-		EnemyManager.Instance.RemoveEnemy(this);
+		GameManager.Instance.paintManager.AddSplat(transform.position, m_SpriteRenderer.color);
+		GameManager.Instance.enemyManager.RemoveEnemy(this);
 		Destroy(gameObject);
 	}
 
 	private void Move()
 	{
-		Vector2 dir = (PlayerController.Instance.transform.position - transform.position).normalized;
+		Vector2 dir = (GameManager.Instance.player.transform.position - transform.position).normalized;
 		transform.position += new Vector3(dir.x, dir.y, 0) * m_MovementSpeed * Time.deltaTime;
 	}
 	#endregion

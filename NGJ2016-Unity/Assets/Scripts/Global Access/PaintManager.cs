@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class PaintManager : MonoBehaviour {
 	#region Variables
-	public static PaintManager Instance;
-
 	[Header("Time")]
 	[SerializeField, Range(0, 3f)]
 	private float m_TransitionDuration = 1f;
@@ -21,12 +19,6 @@ public class PaintManager : MonoBehaviour {
 	private Transform m_PaintDir;
 
 	private List<PaintInstance> m_Instances = new List<PaintInstance>();
-	#endregion
-
-	#region Monobehaviour
-	private void Awake() {
-		Instance = this;
-	}
 	#endregion
 
 	#region Methods

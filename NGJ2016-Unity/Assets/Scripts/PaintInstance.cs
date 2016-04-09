@@ -16,7 +16,7 @@ public class PaintInstance : MonoBehaviour {
 	#region Monobehaviour
 	private void Start() {
 		SetColor();
-		PaintManager.Instance.AddInstance(this);
+		GameManager.Instance.paintManager.AddInstance(this);
 
 		if (randomizeRotation)
 		{
