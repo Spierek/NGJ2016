@@ -22,7 +22,6 @@ public class BaseEnemy : LSCacheBehaviour {
 
 	public void OnTriggerEnter2D(Collider2D collision)
 	{
-		LSDebug.WriteLine(collision.gameObject.name + " trigger", 1f);
 		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_PROJECTILE_LAYER))
 		{
 			Kill();

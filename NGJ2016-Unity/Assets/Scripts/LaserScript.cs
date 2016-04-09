@@ -49,6 +49,7 @@ public class LaserScript : MonoBehaviour
 	private IEnumerator DelayedHitboxDisable()
 	{
 		yield return null;
+		yield return null;
 		hitbox.enabled = false;
 	}
 	#endregion
