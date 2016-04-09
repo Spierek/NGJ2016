@@ -83,7 +83,7 @@ public class PlayerController : LSCacheBehaviour
 
 	private void OnTriggerStay2D(Collider2D collision)
 	{
-		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER_NAME) && m_HandleDOTInThisTurn)
+		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.LAVA_LAYER) && m_HandleDOTInThisTurn)
 		{
 			DamageOverTime();
 		}

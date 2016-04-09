@@ -1,35 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BaseEnemy : MonoBehaviour {
+public class BaseEnemy : LSCacheBehaviour {
 	#region Variables
 	[Header("Movement")]
-	public float movementSpeed = 10f;
+	[SerializeField, Range(0, 10f)]
+	private float m_MovementSpeed = 10f;
 
 	[SerializeField]
-	private Collider2D hitbox;
-	[SerializeField]
-	private SpriteRenderer spriteRenderer;
-
-	private PlayerController player;
+	private SpriteRenderer m_SpriteRenderer;
 	#endregion
 
 	#region Monobehaviour
 	private void Start() {
-		player = PlayerController.Instance;
-		spriteRenderer.color = ColorManager.GetCurrentColor();
+		m_SpriteRenderer.color = ColorManager.GetCurrentColor();
 	}
 	
 	private void Update() {
 		Move();
 	}
+
+	public void OnTriggerEnter2D(Collider2D collision)
+	{
+		LSDebug.WriteLine(collision.gameObject.name + " trigger", 1f);
+		if (collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_PROJECTILE_LAYER))
+		{
+			Kill();
+		}
+	}
 	#endregion
 
 	#region Methods
+	public void Kill()
+	{
+		// TODO #LS drop particles n shit
+		Destroy(gameObject);
+	}
+
 	private void Move()
 	{
-		Vector2 dir = (player.transform.position - transform.position).normalized;
-		transform.position += new Vector3(dir.x, dir.y, 0) * movementSpeed * Time.deltaTime;
+		Vector2 dir = (PlayerController.Instance.transform.position - transform.position).normalized;
+		transform.position += new Vector3(dir.x, dir.y, 0) * m_MovementSpeed * Time.deltaTime;
 	}
 	#endregion
 }

@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
+using System.Collections;
 
-public class LaserScript : MonoBehaviour {
+public class LaserScript : MonoBehaviour
+{
 	#region Variables
 	[SerializeField]
 	private Collider2D hitbox;
@@ -13,13 +15,11 @@ public class LaserScript : MonoBehaviour {
 	#endregion
 
 	#region Monobehaviour
-	private void Start() {
+	private void Start()
+	{
 		SetColor();
 		PaintManager.Instance.AddLaser(this);
-	}
-	
-	private void Update() {
-
+		StartCoroutine(DelayedHitboxDisable());
 	}
 	#endregion
 
@@ -44,6 +44,12 @@ public class LaserScript : MonoBehaviour {
 	private void SetColor(Color col)
 	{
 		spriteRenderer.color = col;
+	}
+
+	private IEnumerator DelayedHitboxDisable()
+	{
+		yield return null;
+		hitbox.enabled = false;
 	}
 	#endregion
 }
