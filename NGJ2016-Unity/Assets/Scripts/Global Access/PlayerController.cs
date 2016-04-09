@@ -79,6 +79,8 @@ public class PlayerController : LSCacheBehaviour
 	private void LateUpdate()
 	{
 		m_HandleDOTInThisTurn = true;
+
+		CheckBounds();
 	}
 
 	private void OnTriggerStay2D(Collider2D collision)
@@ -192,6 +194,17 @@ public class PlayerController : LSCacheBehaviour
 		m_CanFire = false;
 		yield return new WaitForSeconds(m_FiringDelay);
 		m_CanFire = true;
+	}
+
+	private void CheckBounds()
+	{
+		Bounds b = GameManager.Instance.bounds.bounds;
+		Vector3 newPos = transform.position;
+		newPos.x = Mathf.Clamp(newPos.x, -b.extents.x, b.extents.x);
+		newPos.y = Mathf.Clamp(newPos.y, -b.extents.y, b.extents.y);
+		LSDebug.WriteLine(b.extents.ToString());
+
+		transform.position = newPos;
 	}
 	#endregion
 }

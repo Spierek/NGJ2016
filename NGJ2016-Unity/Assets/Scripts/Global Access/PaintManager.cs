@@ -55,7 +55,7 @@ public class PaintManager : MonoBehaviour {
 	{
 		GameObject go = Instantiate(m_BigSplatPrefab);
 		go.transform.parent = m_PaintDir;
-		go.GetComponent<TransitionPaint>().Enable(color, lifetime);
+		go.GetComponent<TransitionPaint>().Enable(color, lifetime + 1f);
 		
 		Destroy(go, lifetime);
 	}
@@ -71,7 +71,6 @@ public class PaintManager : MonoBehaviour {
 			float remaining = m_TransitionDuration - timer;
 			AddBigSplat(newColor, remaining);
             AddBigSplat(newColor, remaining);
-
 
 			timer += Time.deltaTime;
 			yield return null;
