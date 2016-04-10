@@ -75,7 +75,6 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Start()
 	{
-		LSDebug.SetEnabled(true);
 		SetHealth(m_MaxHealth);
 	}
 
