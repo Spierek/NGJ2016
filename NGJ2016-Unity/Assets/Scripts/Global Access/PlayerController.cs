@@ -107,6 +107,7 @@ public class PlayerController : LSCacheBehaviour
 	public void SetFreeze(bool set)
 	{
 		m_IsFrozen = set;
+		m_CrosshairPivot.gameObject.SetActive(!set);
 	}
 
 	public void Damage(float val)
