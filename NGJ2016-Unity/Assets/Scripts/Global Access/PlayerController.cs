@@ -36,6 +36,8 @@ public class PlayerController : LSCacheBehaviour
 	private Animator m_Animator;
 	[SerializeField]
 	private AudioSource m_AudioSource;
+	[SerializeField]
+	private AudioSource m_DOTAudioSource;
 
 	[Header("Prefabs")]
 	[SerializeField]
@@ -62,6 +64,7 @@ public class PlayerController : LSCacheBehaviour
 	private bool m_CanDash = true;
 	private bool m_CanFire = true;
 	private bool m_IsFrozen = false;
+	private bool m_IsDOTAudioPlaying = false;
 	#endregion
 
 	#region Monobehaviour
@@ -100,6 +103,12 @@ public class PlayerController : LSCacheBehaviour
 
 	private void LateUpdate()
 	{
+		if (m_HandleDOTInThisTurn && m_IsDOTAudioPlaying)
+		{
+			m_DOTAudioSource.Pause();
+			m_IsDOTAudioPlaying = false;
+		}
+
 		m_HandleDOTInThisTurn = true;
 
 		CheckBounds();
@@ -121,10 +130,15 @@ public class PlayerController : LSCacheBehaviour
 		m_CrosshairPivot.gameObject.SetActive(!set);
 	}
 
-	public void Damage(float val)
+	public void Damage(float val, bool playSound = false)
 	{
 	 	SetHealth(m_CurrentHealth - val);
-		m_AudioSource.PlayOneShot(m_DamageSound);
+
+		if (playSound)
+		{
+			m_AudioSource.PlayOneShot(m_DamageSound);
+		}
+
 		if (m_CurrentHealth <= 0)
 		{
 			StartCoroutine(GameManager.Instance.GameOver());
@@ -140,6 +154,12 @@ public class PlayerController : LSCacheBehaviour
 	{
 		Damage(m_DamagePerSecond * Time.deltaTime);
 		m_HandleDOTInThisTurn = false;
+
+		if (!m_IsFrozen && !m_IsDOTAudioPlaying)
+		{
+			m_DOTAudioSource.Play();
+		}
+		m_IsDOTAudioPlaying = true;
 	}
 
 	private void SetHealth(float val)
