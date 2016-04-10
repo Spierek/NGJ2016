@@ -28,12 +28,30 @@ public class GameManager : MonoBehaviour {
 	private void Start()
 	{
 		m_CurrentProgress = m_ProgressLimit;
+		SetGameplayFreeze(true);
 		uiManager.progressBar.SetProgressLimit(m_ProgressLimit);
 		uiManager.progressBar.SetProgress(m_CurrentProgress);
+	}
+
+	private void Update()
+	{
+		if (Input.anyKeyDown)
+		{
+			StartCoroutine(StartGame());
+		}
 	}
 	#endregion
 
 	#region Methods
+	private IEnumerator StartGame()
+	{
+		uiManager.FadeHUDGroup(1f);
+		uiManager.FadeTitleGroup(0f);
+
+		yield return new WaitForSeconds(1f);
+		SetGameplayFreeze(false);
+	}
+
 	public void SetGameplayFreeze(bool set)
 	{
 		player.SetFreeze(set);
