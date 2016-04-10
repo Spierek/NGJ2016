@@ -30,6 +30,10 @@ public class PlayerController : LSCacheBehaviour
 	private Collider2D m_Hitbox;
 	[SerializeField]
 	private Transform m_CrosshairPivot;
+	[SerializeField]
+	private Transform m_SpriteTransform;
+	[SerializeField]
+	private Animator m_Animator;
 
 	[Header("Prefabs")]
 	[SerializeField]
@@ -41,6 +45,8 @@ public class PlayerController : LSCacheBehaviour
 	private Vector2 m_Forward;
 	private float m_RotationAngle;
 
+	private Vector3 m_InitialScale;
+
 	private bool m_HandleDOTInThisTurn = true; // handle only one DamageOverTime event per turn
 	private bool m_CanDash = true;
 	private bool m_CanFire = true;
@@ -48,6 +54,11 @@ public class PlayerController : LSCacheBehaviour
 	#endregion
 
 	#region Monobehaviour
+	private void Awake()
+	{
+		m_InitialScale = m_SpriteTransform.localScale;
+	}
+
 	private void Start()
 	{
 		LSDebug.SetEnabled(true);
@@ -73,7 +84,7 @@ public class PlayerController : LSCacheBehaviour
 			}
 		}
 
-		PositionCrosshairLine();
+		RotatePlayerAndCrosshair();
 	}
 
 	private void LateUpdate()
@@ -145,6 +156,10 @@ public class PlayerController : LSCacheBehaviour
 
 		// apply input
 		rigidbody2D.AddForce(movement * m_Acceleration * Time.deltaTime, ForceMode2D.Impulse);
+
+		// animation
+		LSDebug.WriteLine("mag", rigidbody2D.velocity.magnitude.ToString());
+		m_Animator.SetBool("isRunning", rigidbody2D.velocity.magnitude > 0.1f);
 	}
  
 	private void Shoot()
@@ -165,8 +180,12 @@ public class PlayerController : LSCacheBehaviour
 		StartCoroutine(DashDelay());
 	}
 
-	private void PositionCrosshairLine()
+	private void RotatePlayerAndCrosshair()
 	{
+		Vector3 newScale = m_InitialScale;
+		newScale.x *= m_RotationAngle > 0 ? -1 : 1;
+		m_SpriteTransform.localScale = newScale;
+
 		m_CrosshairPivot.localRotation = Quaternion.Euler(0, 0, m_RotationAngle);
 	}
 
