@@ -12,10 +12,12 @@ public class GameManager : MonoBehaviour {
 	public PaintManager paintManager;
 	public UIManager uiManager;
 
-	private int progressLimit = 10;
-	private int currentProgress;
+	private int m_ProgressLimit = 10;
+	private int m_CurrentProgress;
 
-	private bool transitionNextFrame = false;
+	private int m_TotalKills = 0;
+
+	private bool m_TransitionNextFrame = false;
 	#endregion
 
 	#region Monobehaviour
@@ -25,9 +27,9 @@ public class GameManager : MonoBehaviour {
 
 	private void Start()
 	{
-		currentProgress = progressLimit;
-		uiManager.progressBar.SetProgressLimit(progressLimit);
-		uiManager.progressBar.SetProgress(currentProgress);
+		m_CurrentProgress = m_ProgressLimit;
+		uiManager.progressBar.SetProgressLimit(m_ProgressLimit);
+		uiManager.progressBar.SetProgress(m_CurrentProgress);
 	}
 	#endregion
 
@@ -41,14 +43,17 @@ public class GameManager : MonoBehaviour {
 
 	public void Progress()
 	{
-		currentProgress--;
-		uiManager.progressBar.SetProgress(currentProgress);
+		m_CurrentProgress--;
+		uiManager.progressBar.SetProgress(m_CurrentProgress);
 
-		if (currentProgress <= 0 && !transitionNextFrame)
+		if (m_CurrentProgress <= 0 && !m_TransitionNextFrame)
 		{
 			StartCoroutine(NextStage());
-			transitionNextFrame = true;
+			m_TransitionNextFrame = true;
 		}
+
+		m_TotalKills++;
+		uiManager.totalCounter.text = m_TotalKills.ToString();
 	}
 
 	private IEnumerator NextStage()
@@ -56,13 +61,13 @@ public class GameManager : MonoBehaviour {
 		yield return null;		// wait 1 frame
 		paintManager.StartTransition();
 
-		progressLimit += 2;
-		currentProgress = progressLimit;
+		m_ProgressLimit += 2;
+		m_CurrentProgress = m_ProgressLimit;
 
-		uiManager.progressBar.SetProgressLimit(progressLimit);
-		uiManager.progressBar.SetProgress(currentProgress);
+		uiManager.progressBar.SetProgressLimit(m_ProgressLimit);
+		uiManager.progressBar.SetProgress(m_CurrentProgress);
 
-		transitionNextFrame = false;
+		m_TransitionNextFrame = false;
 	}
 	#endregion
 }
