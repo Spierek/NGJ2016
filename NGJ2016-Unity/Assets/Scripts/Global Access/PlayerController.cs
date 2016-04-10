@@ -42,7 +42,8 @@ public class PlayerController : LSCacheBehaviour
 	private float m_CurrentHealth;
 
 	private Vector3 m_WorldMousePos;
-	private Vector2 m_Forward;
+	private Vector2 m_LookForward;
+	private Vector2 m_MoveForward = new Vector2();
 	private float m_RotationAngle;
 
 	private Vector3 m_InitialScale;
@@ -143,20 +144,19 @@ public class PlayerController : LSCacheBehaviour
 
 		Vector2 A = new Vector2(m_WorldMousePos.x, m_WorldMousePos.y);
 		Vector2 B = new Vector2(transform.position.x, transform.position.y);
-		m_Forward = (A - B).normalized;
+		m_LookForward = (A - B).normalized;
 
-		m_RotationAngle = -LSGamepad.GetStickAngle(m_Forward.x, m_Forward.y);
+		m_RotationAngle = -LSGamepad.GetStickAngle(m_LookForward.x, m_LookForward.y);
 	}
 
 	private void Move()
 	{
 		// get input
-		Vector2 movement = Vector2.zero;
-		movement.x = Input.GetAxisRaw(GameConsts.HORIZONTAL_AXIS_NAME);
-		movement.y = Input.GetAxisRaw(GameConsts.VERTICAL_AXIS_NAME);
+		m_MoveForward.x = Input.GetAxisRaw(GameConsts.HORIZONTAL_AXIS_NAME);
+		m_MoveForward.y = Input.GetAxisRaw(GameConsts.VERTICAL_AXIS_NAME);
 
 		// apply input
-		rigidbody2D.AddForce(movement * m_Acceleration * Time.deltaTime, ForceMode2D.Impulse);
+		rigidbody2D.AddForce(m_MoveForward * m_Acceleration * Time.deltaTime, ForceMode2D.Impulse);
 
 		// animation
 		LSDebug.WriteLine("mag", rigidbody2D.velocity.magnitude.ToString());
@@ -176,7 +176,7 @@ public class PlayerController : LSCacheBehaviour
 
 	private void Dash()
 	{
-		rigidbody2D.AddForce(m_Forward * m_DashSpeed, ForceMode2D.Impulse);
+		rigidbody2D.AddForce(m_MoveForward * m_DashSpeed, ForceMode2D.Impulse);
 		StartCoroutine(DisableHitboxDuringDash());
 		StartCoroutine(DashDelay());
 	}
