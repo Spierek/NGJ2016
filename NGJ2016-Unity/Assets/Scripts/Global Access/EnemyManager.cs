@@ -3,6 +3,14 @@ using System.Collections.Generic;
 
 public class EnemyManager : MonoBehaviour {
 	#region Variables
+	[SerializeField]
+	protected AudioSource m_AudioSource;
+
+	[SerializeField]
+	private AudioClip m_BaseDeathSound;
+	[SerializeField]
+	private AudioClip m_PainterDeathSound;
+
 	private List<BaseEnemy> m_Enemies = new List<BaseEnemy>();
 	#endregion
 
@@ -12,9 +20,10 @@ public class EnemyManager : MonoBehaviour {
 		m_Enemies.Add(enemy);
 	}
 
-	public void RemoveEnemy(BaseEnemy enemy)
+	public void RemoveEnemy(BaseEnemy enemy, bool isPainter = false)
 	{
 		m_Enemies.Remove(enemy);
+		m_AudioSource.PlayOneShot(isPainter ? m_PainterDeathSound : m_BaseDeathSound);
 	}
 
 	public void FreezeAllEnemies(bool set)

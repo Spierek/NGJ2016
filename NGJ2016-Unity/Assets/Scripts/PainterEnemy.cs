@@ -37,7 +37,7 @@ public class PainterEnemy : BaseEnemy {
 	public override void Kill(bool getPoint = true)
 	{
 		GameManager.Instance.paintManager.AddBigSplat(transform.position, m_SpriteRenderer.color);
-		GameManager.Instance.enemyManager.RemoveEnemy(this);
+		GameManager.Instance.enemyManager.RemoveEnemy(this, true);
 
 		if (getPoint)
 		{

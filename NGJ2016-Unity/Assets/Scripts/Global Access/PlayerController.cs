@@ -34,10 +34,20 @@ public class PlayerController : LSCacheBehaviour
 	private Transform m_SpriteTransform;
 	[SerializeField]
 	private Animator m_Animator;
+	[SerializeField]
+	private AudioSource m_AudioSource;
 
 	[Header("Prefabs")]
 	[SerializeField]
 	private GameObject m_LaserPrefab;
+
+	[Header("Audio")]
+	[SerializeField]
+	private AudioClip m_ShootSound;
+	[SerializeField]
+	private AudioClip m_DashSound;
+	[SerializeField]
+	private AudioClip m_DamageSound;
 
 	private float m_CurrentHealth;
 
@@ -114,6 +124,7 @@ public class PlayerController : LSCacheBehaviour
 	public void Damage(float val)
 	{
 	 	SetHealth(m_CurrentHealth - val);
+		m_AudioSource.PlayOneShot(m_DamageSound);
 		if (m_CurrentHealth <= 0)
 		{
 			StartCoroutine(GameManager.Instance.GameOver());
@@ -172,6 +183,7 @@ public class PlayerController : LSCacheBehaviour
 
 		StartCoroutine(FiringDelay());
 		CameraShaker.Instance.Shake(0.15f, 0.2f);
+		m_AudioSource.PlayOneShot(m_ShootSound);
     }
 
 	private void Dash()
@@ -179,6 +191,7 @@ public class PlayerController : LSCacheBehaviour
 		rigidbody2D.AddForce(m_MoveForward * m_DashSpeed, ForceMode2D.Impulse);
 		StartCoroutine(DisableHitboxDuringDash());
 		StartCoroutine(DashDelay());
+		m_AudioSource.PlayOneShot(m_DashSound);
 	}
 
 	private void RotatePlayerAndCrosshair()
