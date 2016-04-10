@@ -2,14 +2,18 @@
 
 public class BaseEnemy : MonoBehaviour {
 	#region Variables
-	[Header("Movement")]
 	[SerializeField, Range(0, 10f)]
-	protected float m_MovementSpeed = 10f;
+	protected float m_MovementSpeed = 3f;
+	[SerializeField, Range(10, 40f)]
+	protected float m_Pushback = 30f;
+	[SerializeField, Range(0, 50f)]
+	protected float m_PlayerDamage = 5f;
 
 	[SerializeField]
 	protected SpriteRenderer m_SpriteRenderer;
 
 	private bool m_IsFrozen = false;
+	private Vector3 m_MoveDir = new Vector3();
 	#endregion
 
 	#region Monobehaviour
@@ -29,6 +33,16 @@ public class BaseEnemy : MonoBehaviour {
 		if (!m_IsFrozen && collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_PROJECTILE_LAYER))
 		{
 			Kill();
+		}
+	}
+
+	public void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (!m_IsFrozen && collision.gameObject.layer == LayerMask.NameToLayer(GameConsts.PLAYER_LAYER))
+		{
+			GameManager.Instance.player.Damage(m_PlayerDamage);
+			GameManager.Instance.player.GetComponent<Rigidbody2D>().AddForce(m_MoveDir * m_Pushback, ForceMode2D.Impulse);
+			Kill(false);
 		}
 	}
 	#endregion
@@ -64,8 +78,8 @@ public class BaseEnemy : MonoBehaviour {
 
 	protected virtual void Move()
 	{
-		Vector2 dir = (GameManager.Instance.player.transform.position - transform.position).normalized;
-		transform.position += new Vector3(dir.x, dir.y, 0) * m_MovementSpeed * Time.deltaTime;
+		m_MoveDir = (GameManager.Instance.player.transform.position - transform.position).normalized;
+		transform.position += new Vector3(m_MoveDir.x, m_MoveDir.y, 0) * m_MovementSpeed * Time.deltaTime;
 	}
 	#endregion
 }

@@ -75,18 +75,20 @@ public class GameManager : MonoBehaviour {
 		uiManager.totalCounter.text = m_TotalKills.ToString();
 	}
 
-	public void GameOver()
+	public IEnumerator GameOver()
 	{
 		SetGameplayFreeze(true);
-		m_IsGameOver = true;
 		uiManager.gameOverTotalText.text = "SCORE: " + m_TotalKills;
 
 		if (!ColorManager.Instance.GetIsBlack())
 		{
 			paintManager.StartTransition();
-		}
+		}	
 		uiManager.FadeHUDGroup(0f);
 		uiManager.FadeGameOverGroup(1f);
+
+		yield return new WaitForSeconds(1f);
+		m_IsGameOver = true;
 	}
 
 	private IEnumerator NextStage()
