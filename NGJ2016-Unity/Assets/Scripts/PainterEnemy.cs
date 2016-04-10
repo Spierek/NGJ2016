@@ -61,6 +61,8 @@ public class PainterEnemy : BaseEnemy {
 	{
 		m_SpriteRenderer.sprite = ColorManager.Instance.GetIsBlack() ? m_BlackSprite : m_WhiteSprite;
 		m_Particles.startColor = ColorManager.Instance.GetCurrentColor();
+		m_SpawnParticles.startColor = ColorManager.Instance.GetCurrentColor();
+		m_SpawnParticles.Play();
 	}
 
 	private IEnumerator RandomizeDirection()

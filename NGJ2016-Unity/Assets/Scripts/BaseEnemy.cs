@@ -11,6 +11,8 @@ public class BaseEnemy : MonoBehaviour {
 
 	[SerializeField]
 	protected SpriteRenderer m_SpriteRenderer;
+	[SerializeField]
+	protected ParticleSystem m_SpawnParticles;
 
 	private bool m_IsFrozen = false;
 	private Vector3 m_MoveDir = new Vector3();
@@ -74,6 +76,8 @@ public class BaseEnemy : MonoBehaviour {
 	protected virtual void SetColor()
 	{
 		m_SpriteRenderer.color = ColorManager.Instance.GetCurrentColor();
+		m_SpawnParticles.startColor = ColorManager.Instance.GetCurrentColor();
+		m_SpawnParticles.Play();
 	}
 
 	protected virtual void Move()
