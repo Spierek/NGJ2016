@@ -21,6 +21,8 @@ public class PaintManager : MonoBehaviour {
 	private SpriteRenderer m_ArenaBG;
 	[SerializeField]
 	private Transform m_PaintDir;
+	[SerializeField]
+	private AudioSource m_AudioSource;
 
 	private List<PaintInstance> m_Instances = new List<PaintInstance>();
 	#endregion
@@ -33,7 +35,8 @@ public class PaintManager : MonoBehaviour {
 			m_Instances[i].DelayedDestroy(false, m_TransitionDuration);
 		}
 		m_Instances.Clear();
-		
+
+		m_AudioSource.Play();
 		Color prevColor = m_ArenaBG.color;
 		Color newColor = ColorManager.Instance.GetCurrentColor();
 		ColorManager.Instance.ChangeCurrentColor();
