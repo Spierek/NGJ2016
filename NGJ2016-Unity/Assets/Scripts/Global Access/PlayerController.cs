@@ -115,7 +115,7 @@ public class PlayerController : LSCacheBehaviour
 	 	SetHealth(m_CurrentHealth - val);
 		if (m_CurrentHealth <= 0)
 		{
-			GameManager.Instance.GameOver();
+			StartCoroutine(GameManager.Instance.GameOver());
 		}
 	}
 
