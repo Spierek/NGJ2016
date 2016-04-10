@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour {
 	public PaintManager paintManager;
 	public UIManager uiManager;
 
+	[Header("Audio")]
+	public AudioSource whiteMusicSource;
+	public AudioSource blackMusicSource;
+
 	private int m_ProgressLimit = 10;
 	private int m_CurrentProgress;
 
@@ -103,6 +107,17 @@ public class GameManager : MonoBehaviour {
 		uiManager.progressBar.SetProgress(m_CurrentProgress);
 
 		m_TransitionNextFrame = false;
+
+		if (ColorManager.Instance.GetIsBlack())
+		{
+			whiteMusicSource.Stop();
+			blackMusicSource.Play();
+		}
+		else
+		{
+			blackMusicSource.Stop();
+			whiteMusicSource.Play();
+		}
 	}
 
 	private IEnumerator StartGame()
