@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 	#region Variables
-	public Slider transitionSlider;
+	public Slider healthBar;
 	public ProgressBarScript progressBar;
 	#endregion
 }

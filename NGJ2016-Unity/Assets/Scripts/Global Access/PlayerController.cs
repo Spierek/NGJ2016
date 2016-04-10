@@ -121,7 +121,7 @@ public class PlayerController : LSCacheBehaviour
 	private void SetHealth(float val)
 	{
 		m_CurrentHealth = Mathf.Clamp(val, 0, m_MaxHealth);
-		GameManager.Instance.uiManager.transitionSlider.value = GetCurrentHealth01();
+		GameManager.Instance.uiManager.healthBar.value = GetCurrentHealth01();
 	}
 
 	private void CalculateForward()
