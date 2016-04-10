@@ -1,27 +1,26 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
-public class BaseEnemy : LSCacheBehaviour {
+public class BaseEnemy : MonoBehaviour {
 	#region Variables
 	[Header("Movement")]
 	[SerializeField, Range(0, 10f)]
-	private float m_MovementSpeed = 10f;
+	protected float m_MovementSpeed = 10f;
 
 	[SerializeField]
-	private SpriteRenderer m_SpriteRenderer;
+	protected SpriteRenderer m_SpriteRenderer;
 
 	private bool m_IsFrozen = false;
 	#endregion
 
 	#region Monobehaviour
-	private void Start() {
-		m_SpriteRenderer.color = ColorManager.Instance.GetCurrentColor();
+	protected virtual void Start() {
+		SetColor();
 	}
 	
 	private void Update() {
 		if (!m_IsFrozen)
 		{
-			Move();
+			Logic();
 		}
 	}
 
@@ -40,15 +39,24 @@ public class BaseEnemy : LSCacheBehaviour {
 		m_IsFrozen = set;
 	}
 
-	public void Kill()
+	public virtual void Kill()
 	{
-		// TODO #LS drop particles n shit
 		GameManager.Instance.paintManager.AddSplat(transform.position, m_SpriteRenderer.color);
 		GameManager.Instance.enemyManager.RemoveEnemy(this);
 		Destroy(gameObject);
 	}
 
-	private void Move()
+	protected virtual void Logic()
+	{
+		Move();
+	}
+
+	protected virtual void SetColor()
+	{
+		m_SpriteRenderer.color = ColorManager.Instance.GetCurrentColor();
+	}
+
+	protected virtual void Move()
 	{
 		Vector2 dir = (GameManager.Instance.player.transform.position - transform.position).normalized;
 		transform.position += new Vector3(dir.x, dir.y, 0) * m_MovementSpeed * Time.deltaTime;

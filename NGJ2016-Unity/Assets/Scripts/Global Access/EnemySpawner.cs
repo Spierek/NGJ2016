@@ -1,19 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
+[System.Serializable]
+public struct EnemySpawnData
+{
+	public GameObject prefab;
+	[Range(0,1f)]
+	public float spawnChance;
+}
 
 public class EnemySpawner : MonoBehaviour {
 	#region Variables
 	[SerializeField]
-	private Vector2 spawnDelay = new Vector2(1f, 2f);
+	private Vector2 m_SpawnDelay = new Vector2(1f, 2f);
 	[SerializeField, Range(0,10f)]
-	private float minPlayerDistance = 1f;
+	private float m_MinPlayerDistance = 1f;
 
 	[SerializeField]
-	private Transform spawnDir;
+	private Transform m_SpawnDir;
 
-	[Header("Prefabs")]
 	[SerializeField]
-	private GameObject enemyPrefab;
+	private List<EnemySpawnData> m_EnemyPrefabs = new List<EnemySpawnData>();
 
 	private bool m_IsFrozen = false;
 	#endregion
@@ -32,7 +40,7 @@ public class EnemySpawner : MonoBehaviour {
 
 	private IEnumerator WaitAndSpawn()
 	{
-		float delay = Random.Range(spawnDelay.x, spawnDelay.y);
+		float delay = Random.Range(m_SpawnDelay.x, m_SpawnDelay.y);
 		float timer = 0f;
 
 		while (timer < delay)
@@ -59,25 +67,43 @@ public class EnemySpawner : MonoBehaviour {
 
 	private void RandomizePosition()
 	{
-		Bounds bounds = GameManager.Instance.bounds.bounds;
-		Vector3 newPos = new Vector3(
-			Random.Range(-bounds.extents.x, bounds.extents.x),
-            Random.Range(-bounds.extents.y, bounds.extents.y),
-			0);
-
-		transform.position = newPos;
+		transform.position = GameManager.Instance.bounds.GetRandomPoint();
 	}
 
 	private bool CheckPlayerDistance()
 	{
-		return minPlayerDistance >= Vector3.Distance(GameManager.Instance.player.transform.position, transform.position);
+		return m_MinPlayerDistance >= Vector3.Distance(GameManager.Instance.player.transform.position, transform.position);
 	}
 
 	private void Spawn()
 	{
-		Transform t = LSUtils.InstantiateAndParent(enemyPrefab, spawnDir);
-		t.position = transform.position;
-		GameManager.Instance.enemyManager.AddEnemy(t.GetComponent<BaseEnemy>());
+		// get spawn chance
+		float spawnRange = 0f;
+		for (int i = 0; i < m_EnemyPrefabs.Count; ++i)
+		{
+			spawnRange += m_EnemyPrefabs[i].spawnChance;
+		}
+
+		if (spawnRange <= 0)
+		{
+			return;
+		}
+
+		float targetChance = Random.Range(0, spawnRange);
+
+		// find target prefab
+		float currentChance = 0f;
+		for (int i = 0; i < m_EnemyPrefabs.Count; ++i)
+		{
+			currentChance += m_EnemyPrefabs[i].spawnChance;
+			if (currentChance >= targetChance)
+			{
+				Transform t = LSUtils.InstantiateAndParent(m_EnemyPrefabs[i].prefab, m_SpawnDir);
+				t.position = transform.position;
+				GameManager.Instance.enemyManager.AddEnemy(t.GetComponent<BaseEnemy>());
+				return;
+			}
+		}
 	}
 	#endregion
 }

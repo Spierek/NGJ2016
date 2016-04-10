@@ -31,5 +31,10 @@ public class ColorManager : MonoBehaviour {
 	{
 		bgIsBlack = !bgIsBlack;
 	}
+
+	public bool GetIsBlack()
+	{
+		return bgIsBlack;
+	}
 	#endregion
 }

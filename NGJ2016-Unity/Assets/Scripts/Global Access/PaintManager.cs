@@ -13,6 +13,8 @@ public class PaintManager : MonoBehaviour {
 	private GameObject m_SplatPrefab;
 	[SerializeField]
 	private GameObject m_BigSplatPrefab;
+	[SerializeField]
+	private GameObject m_TransitionPrefab;
 
 	[Header("References")]
 	[SerializeField]
@@ -51,9 +53,15 @@ public class PaintManager : MonoBehaviour {
 		t.position = position;
 	}
 
-	public void AddBigSplat(Color color, float lifetime)
+	public void AddBigSplat(Vector3 position, Color color)
 	{
-		GameObject go = Instantiate(m_BigSplatPrefab);
+		Transform t = LSUtils.InstantiateAndParent(m_BigSplatPrefab, m_PaintDir);
+		t.position = position;
+	}
+
+	public void AddTransitionSplat(Color color, float lifetime)
+	{
+		GameObject go = Instantiate(m_TransitionPrefab);
 		go.transform.parent = m_PaintDir;
 		go.GetComponent<TransitionPaint>().Enable(color, lifetime + 1f);
 		
@@ -69,8 +77,8 @@ public class PaintManager : MonoBehaviour {
 		while (timer < m_TransitionDuration)
 		{
 			float remaining = m_TransitionDuration - timer;
-			AddBigSplat(newColor, remaining);
-            AddBigSplat(newColor, remaining);
+			AddTransitionSplat(newColor, remaining);
+            AddTransitionSplat(newColor, remaining);
 
 			timer += Time.deltaTime;
 			yield return null;
