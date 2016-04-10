@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour {
 	public Slider healthBar;
 	public ProgressBarScript progressBar;
 	public Text totalCounter;
+	public Text gameOverTotalText;
 
 	[Space(10)]
 	[SerializeField]
@@ -22,6 +23,7 @@ public class UIManager : MonoBehaviour {
 		hudGroup.alpha = 0;
 		titleGroup.alpha = 1;
 		gameOverGroup.alpha = 0;
+		totalCounter.text = "0";
 	}
 
 	public void FadeHUDGroup(float target)

@@ -39,10 +39,16 @@ public class BaseEnemy : MonoBehaviour {
 		m_IsFrozen = set;
 	}
 
-	public virtual void Kill()
+	public virtual void Kill(bool getPoint = true)
 	{
 		GameManager.Instance.paintManager.AddSplat(transform.position, m_SpriteRenderer.color);
 		GameManager.Instance.enemyManager.RemoveEnemy(this);
+
+		if (getPoint)
+		{
+			GameManager.Instance.Progress();
+		}
+
 		Destroy(gameObject);
 	}
 

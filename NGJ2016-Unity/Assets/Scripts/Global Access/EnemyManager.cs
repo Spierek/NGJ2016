@@ -15,7 +15,6 @@ public class EnemyManager : MonoBehaviour {
 	public void RemoveEnemy(BaseEnemy enemy)
 	{
 		m_Enemies.Remove(enemy);
-		GameManager.Instance.Progress();
 	}
 
 	public void FreezeAllEnemies(bool set)
@@ -23,6 +22,14 @@ public class EnemyManager : MonoBehaviour {
 		for (int i = 0; i < m_Enemies.Count; ++i)
 		{
 			m_Enemies[i].SetFreeze(set);
+		}
+	}
+
+	public void KillAllEnemies()
+	{
+		for (int i = 0; i < m_Enemies.Count; ++i)
+		{
+			m_Enemies[i].Kill(false);
 		}
 	}
 	#endregion

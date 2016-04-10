@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 	#region Variables
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour {
 	private int m_TotalKills = 0;
 
 	private bool m_TransitionNextFrame = false;
+	private bool m_IsGameOver = false;
 	#endregion
 
 	#region Monobehaviour
@@ -39,19 +41,18 @@ public class GameManager : MonoBehaviour {
 		{
 			StartCoroutine(StartGame());
 		}
+
+		if (m_IsGameOver)
+		{
+			if (Input.anyKeyDown)
+			{
+				SceneManager.LoadScene(0);
+			}
+		}
 	}
 	#endregion
 
 	#region Methods
-	private IEnumerator StartGame()
-	{
-		uiManager.FadeHUDGroup(1f);
-		uiManager.FadeTitleGroup(0f);
-
-		yield return new WaitForSeconds(1f);
-		SetGameplayFreeze(false);
-	}
-
 	public void SetGameplayFreeze(bool set)
 	{
 		player.SetFreeze(set);
@@ -74,6 +75,20 @@ public class GameManager : MonoBehaviour {
 		uiManager.totalCounter.text = m_TotalKills.ToString();
 	}
 
+	public void GameOver()
+	{
+		SetGameplayFreeze(true);
+		m_IsGameOver = true;
+		uiManager.gameOverTotalText.text = "SCORE: " + m_TotalKills;
+
+		if (!ColorManager.Instance.GetIsBlack())
+		{
+			paintManager.StartTransition();
+		}
+		uiManager.FadeHUDGroup(0f);
+		uiManager.FadeGameOverGroup(1f);
+	}
+
 	private IEnumerator NextStage()
 	{
 		yield return null;		// wait 1 frame
@@ -86,6 +101,15 @@ public class GameManager : MonoBehaviour {
 		uiManager.progressBar.SetProgress(m_CurrentProgress);
 
 		m_TransitionNextFrame = false;
+	}
+
+	private IEnumerator StartGame()
+	{
+		uiManager.FadeHUDGroup(1f);
+		uiManager.FadeTitleGroup(0f);
+
+		yield return new WaitForSeconds(1f);
+		SetGameplayFreeze(false);
 	}
 	#endregion
 }
